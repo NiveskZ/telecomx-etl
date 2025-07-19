@@ -62,3 +62,18 @@ df["account.Charges.Total.Day"] = ((df['account.Charges.Total']/df['customer.ten
 
 df.head()
 # %%
+# Padronizando colunas binárias para 0 caso Não e 1 caso Sim
+
+# Pega estritamente as colunas que tenham apenas valores "Yes" e "No"
+cols_yes_no = [col for col in df.columns if df[col].isin(["Yes","No"]).all()] 
+
+df[cols_yes_no] = df[cols_yes_no].replace({"Yes":1,"No":0})
+
+df.head()
+# %%
+# Removendo prefixos dos nomes
+df.rename(columns={
+    col:col.split('.',1)[1].replace('.','_') for col in df.columns if '.' in col
+}, inplace=True)
+df.columns
+# %%

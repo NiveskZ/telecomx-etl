@@ -26,3 +26,7 @@ Por fim, nessa etapa foi adicionada duas novas colunas:
 
 - ```account.Charges.Day```: estimativa de custo diário com base no valor mensal (```account.Charges.Monthly```), garantindo que até mesmo clientes recentes sejam considerados nas comparações.
 - ```account.Charges.Total.Day```: custo diário estimado a partir do total gasto (```account.Charges.Total```) dividido pelos dias correspondentes, permitindo comparações mais justas entre clientes com diferentes períodos de contrato.
+
+Foram convertidas para valores binários (0 e 1) todas as colunas que continham apenas as categorias "Yes" e "No". Colunas com valores adicionais como "No internet service" foram mantidas como categóricas, pois representam mais de duas classes distintas e requerem tratamento diferente na etapa de codificação. 
+
+Como todas as colunas possuem diferenças bem definidas entre si, também foi normalizado os nomes, sendo removido os prefixos ```customer```,```phone```,```internet``` e ```account```

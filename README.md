@@ -1,4 +1,5 @@
 # Challenge Telecom X: Análise de Evasão de Clientes
+![Static Badge](https://img.shields.io/badge/status-em_desenvolvimento-blue)
 Desafio promovido pela Oracle Next Education junto da Alura.
 
 ## Objetivos

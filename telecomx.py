@@ -1,6 +1,8 @@
 # %%
 import requests
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 #%%
 # Extração
 # Solicitando os dados
@@ -76,4 +78,40 @@ df.rename(columns={
     col:col.split('.',1)[1].replace('.','_') for col in df.columns if '.' in col
 }, inplace=True)
 df.columns
+# %%
+# Carga e Análise
+df.describe()
+# %%
+fig, ax = plt.subplots(figsize=(10,6))
+
+ax.pie(df['Churn'].value_counts(),
+             labels=['Não Deu Churn', 'Deu Churn'],
+             autopct='%1.1f%%', explode=(0,0.1))
+ax.set_title("Clientes que deram Churn X Clientes que não deram Churn")
+# %%
+df.head()
+# %%
+fig, ax = plt.subplots(figsize=(15,5))
+
+ax = sns.countplot(df, x='tenure', hue='Churn')
+ax.set_xticks(range(1,df['tenure'].max(), 10))
+
+# %%
+fig, axs = plt.subplots(2,2,figsize=(10,6))
+
+sns.histplot(df,x='Charges_Total',hue='Churn',ax=axs[0,0])
+sns.histplot(df,x='Charges_Day',hue='Churn',ax=axs[0,1])
+sns.histplot(df,x='Charges_Monthly',hue='Churn',ax=axs[1,0])
+sns.histplot(df,x='Charges_Total_Day',hue='Churn',ax=axs[1,1])
+# %%
+fig, axs = plt.subplots(2,2,figsize=(10,6))
+
+sns.boxplot(df,y='Charges_Total',x='Churn',ax=axs[0,0])
+sns.boxplot(df,y='Charges_Day',x='Churn',ax=axs[0,1])
+sns.boxplot(df,y='Charges_Monthly',x='Churn',ax=axs[1,0])
+sns.boxplot(df,y='Charges_Total_Day',x='Churn',ax=axs[1,1])
+# %%
+sns.lmplot(df, x='Charges_Total', y ='Charges_Total_Day',hue='Churn',col='Contract')
+# %%
+sns.lmplot(df, x='tenure', y ='Charges_Total_Day',hue='Churn',col='PaymentMethod')
 # %%

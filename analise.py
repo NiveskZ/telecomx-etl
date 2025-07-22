@@ -22,9 +22,9 @@ plt.tight_layout()
 plt.show()
 # %%
 fig, ax = plt.subplots(figsize=(15,5))
-fig.suptitle("Quantidade de usuários que deram Churn e não deram Churn por meses de contrato")
+fig.suptitle("Quantidade de usuários que deram Churn e não deram Churn por meses de contrato", fontsize=22)
 
-sns.countplot(df, x='tenure', hue='Churn',ax=ax)
+sns.countplot(df, x='tenure', hue='Churn', palette='Set2',ax=ax)
 ax.set_xticks(range(0,df['tenure'].max(), 10))
 ax.set_xlabel("Meses de Contrato")
 ax.set_ylabel("Número de Usuários")

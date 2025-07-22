@@ -1,6 +1,15 @@
 # Challenge Telecom X: Análise de Evasão de Clientes
-![Static Badge](https://img.shields.io/badge/status-em_desenvolvimento-blue)
+![Static Badge](https://img.shields.io/badge/status-complete-green)
+
 Desafio promovido pela Oracle Next Education junto da Alura.
+
+## Ferramentas utilizadas
+- requests
+- Python
+- Pandas
+- Numpy
+- Matplotlib
+- Seaborn
 
 ## Objetivos
 Meu desafio aqui é agir como um assistente de análise de dados em um projeto de **Churn de Clientes** dentro da empresa Telecom X. Para isso irei aplicar os conceitos de ETL e fazer a Coleta, tratamento e análise dos dados.

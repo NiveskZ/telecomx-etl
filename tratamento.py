@@ -100,5 +100,5 @@ df['n_servicos'] = df_servicos.sum(axis=1)
 df.head()
 
 # %%
-df.to_csv("data/telecomx.csv")
+df.to_csv("data/telecomx.csv",index=False)
 # %%

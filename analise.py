@@ -62,8 +62,9 @@ plt.show()
 g = sns.lmplot(df, x='tenure', y ='Charges_Total_Day',hue='Churn',col='Contract',
                col_order=["Month-to-month","One year","Two year"], palette='Set2')
 
-g.figure.suptitle("Relação entre Meses de Contrato e Total Gasto por Dia",fontsize=16)
+g.figure.suptitle("Distribuição total gasto por dia e meses de contrato em relação ao tipo de Contrato",fontsize=16)
 g.figure.subplots_adjust(top=0.85)
+
 g.set_axis_labels("Tempo de Contrato (meses)", "Gasto Diário (R$)")
 g._legend.set_bbox_to_anchor((1.05, 0.5))
 g._legend.set_frame_on(False)
@@ -107,7 +108,12 @@ plt.show()
 # %%
 g = sns.lmplot(df, x='tenure', y ='Charges_Total_Day',hue='Churn',
                col='PaymentMethod',palette='Set2')
+g.figure.suptitle("Distribuição total gasto por dia e meses de contrato em relação ao tipo de Pagamento",fontsize=16)
+g.figure.subplots_adjust(top=0.85)
+
 g.set_axis_labels("Meses de Contrato","Total Gasto por Dia")
+g._legend.set_bbox_to_anchor((1.05, 0.5))
+g._legend.set_frame_on(False)
 
 plt.tight_layout()
 plt.show()
@@ -133,26 +139,59 @@ for ax in axs.ravel():
 plt.tight_layout()
 plt.show()
 # %%
-corr = ['n_servicos',"Charges_Total_Day","tenure","Churn"]
+# Fazendo análises através de matrizes de correlação.
+cols_corr = ['n_servicos', 'Charges_Total_Day', 'tenure', 'Churn']
 # Criando matriz de correlação
-matriz_corr = df[corr].corr()
+matriz_corr = df[cols_corr].corr()
 
 # Cria uma Máscara para tirar a parte superior da matriz.
 mask = np.triu(np.ones_like(matriz_corr,dtype=bool))
-
-fig, ax = plt.subplots(figsize=(11, 9))
 cmap = sns.diverging_palette(180,15,as_cmap=True)
+
+# %%
+fig, ax = plt.subplots(figsize=(10, 8))
 
 sns.heatmap(matriz_corr, mask=mask,cmap=cmap, vmax=0.3, center=0,
             square=True, linewidths=.5,cbar_kws={"shrink": .5},
             annot=True, fmt=".2f",ax=ax)
 
+labels = ['Número de Serviços', 'Gasto total Diário', 'Tempo de Contrato','Churn']
+tick_positions = np.arange(len(labels)) + 0.5
+
 ax.set_title("Matriz de Correlação",fontsize=24,loc='left')
-ax.set_xticks([0.5,1.5,2.5,3.5],
-               labels=['Número de Serviços', 'Gasto total Diário', 'Tempo de Contrato','Churn'],
+ax.set_xticks(tick_positions,
+               labels=labels,
+                rotation=45)
+ax.set_yticks(tick_positions,
+               labels=labels,
                 rotation='horizontal')
-ax.set_yticks([0.5,1.5,2.5,3.5],
-               labels=['Número de Serviços', 'Gasto total Diário', 'Tempo de Contrato','Churn'],
+plt.tight_layout
+plt.show()
+# %%
+payment_dummies = pd.get_dummies(df['PaymentMethod'], prefix='pay', drop_first=False)
+df_corr = pd.concat([payment_dummies,df[['Churn']]], axis=1)
+
+matriz_corr = df_corr.corr()
+
+mask = np.triu(np.ones_like(matriz_corr, dtype=bool))
+# %%
+fig, ax = plt.subplots(figsize=(10, 8))
+
+sns.heatmap(matriz_corr, mask=mask,cmap=cmap, vmax=0.3, center=0,
+            square=True, linewidths=.5,cbar_kws={"shrink": .5},
+            annot=True, fmt=".2f",ax=ax)
+
+ax.set_title("Matriz de Correlação com Métodos de Pagamento",fontsize=24,loc='left')
+
+labels = ['Boleto Bancário', 'Cartão de Crédito',
+          'Cheque Eletrônico', 'Cheque Enviado','Churn']
+tick_positions = np.arange(len(labels)) + 0.5
+
+ax.set_xticks(tick_positions,
+               labels=labels,
+                rotation=45)
+ax.set_yticks(tick_positions,
+               labels=labels,
                 rotation='horizontal')
 
 plt.show()

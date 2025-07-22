@@ -1,5 +1,6 @@
 # %%
 import requests
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -153,6 +154,30 @@ ax.set_ylabel("Número de Usuários")
 plt.tight_layout()
 plt.show()
 # %%
+# Calculando a taxa de churn por meses ativos
+churn_tenure = df.groupby(['tenure','Churn']).size().unstack(fill_value=0)
+
+churn_tenure['taxa_churn'] = (churn_tenure.get(1,0)/churn_tenure.sum(axis=1)) * 100
+
+churn_tenure[['taxa_churn']]
+
+churn_tenure.reset_index(inplace=True)
+# %%
+
+fig,ax = plt.subplots(figsize=(10,5))
+
+sns.lineplot(data=churn_tenure,
+             x='tenure',
+             y='taxa_churn',
+             ax=ax)
+
+ax.set_title("Taxa de Churn por Total de Meses de Contrato do Cliente",loc='left',fontsize=16)
+ax.set_xlabel("Meses de Contrato Ativo")
+ax.set_ylabel("Taxa de Churn de cliente")
+
+plt.tight_layout()
+plt.show()
+# %%
 g = sns.lmplot(df, x='tenure', y ='Charges_Total_Day',hue='Churn',
                col='PaymentMethod',palette='Set2')
 g.set_axis_labels("Meses de Contrato","Total Gasto por Dia")
@@ -181,27 +206,46 @@ for ax in axs.ravel():
 plt.tight_layout()
 plt.show()
 # %%
-# Calculando
-churn_tenure = df.groupby(['tenure','Churn']).size().unstack(fill_value=0)
+# Lista das colunas de serviço, incluindo a InternetService
+servicos_cols = ['PhoneService','MultipleLines','InternetService',
+                 'OnlineSecurity','OnlineBackup','DeviceProtection',
+                 'TechSupport','StreamingTV','StreamingMovies']
 
-churn_tenure['taxa_churn'] = (churn_tenure.get(1,0)/churn_tenure.sum(axis=1)) * 100
+# Criar cópia para não alterar o original
+df_servicos = df[servicos_cols].copy()
 
-churn_tenure[['taxa_churn']]
+# Para colunas binárias simples, mapeia Yes->1, No->0
+binario_map = {'Yes':1, 'No':0}
 
-churn_tenure.reset_index(inplace=True)
+for col in servicos_cols:
+    if col == 'InternetService':
+        # Considera que o cliente tem internet se o valor não for 'No'
+        df_servicos[col] = df_servicos[col].apply(lambda x: 0 if x == 'No' else 1)
+    else:
+        df_servicos[col] = df_servicos[col].map(binario_map)
+
+# Agora soma linha a linha para contar quantos serviços o cliente tem
+df['n_servicos'] = df_servicos.sum(axis=1)
+df.head()
 # %%
+corr = ['n_servicos',"Charges_Total_Day","tenure","Churn"]
+matriz_corr = df[corr].corr()
 
-fig,ax = plt.subplots(figsize=(10,5))
+mask = np.triu(np.ones_like(matriz_corr,dtype=bool))
 
-sns.lineplot(data=churn_tenure,
-             x='tenure',
-             y='taxa_churn',
-             ax=ax)
+fig, ax = plt.subplots(figsize=(11, 9))
 
-ax.set_title("Taxa de Churn por Total de Meses de Contrato do Cliente",loc='left',fontsize=16)
-ax.set_xlabel("Meses de Contrato")
-ax.set_ylabel("Taxa de Churn de cliente")
+cmap = sns.diverging_palette(180,15,as_cmap=True)
 
-plt.tight_layout()
-plt.show()
+sns.heatmap(matriz_corr, mask=mask,cmap=cmap, vmax=0.3, center=0,
+            square=True, linewidths=.5,cbar_kws={"shrink": .5},
+            annot=True, fmt=".2f",ax=ax)
+
+ax.set_title("Matriz de Correlação",fontsize=18,loc='left')
+ax.set_xticks([0.5,1.5,2.5,3.5],
+               labels=['Número de Serviços', 'Gasto total Diário', 'Tempo de Contrato','Churn'],
+                rotation='horizontal')
+ax.set_yticks([0.5,1.5,2.5,3.5],
+               labels=['Número de Serviços', 'Gasto total Diário', 'Tempo de Contrato','Churn'],
+                rotation='horizontal')
 # %%

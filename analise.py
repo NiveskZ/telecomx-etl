@@ -59,11 +59,14 @@ plt.tight_layout()
 plt.show()
 # %%
 
-g = sns.lmplot(df, x='Charges_Total', y ='Charges_Total_Day',hue='Churn',col='Contract',
+g = sns.lmplot(df, x='tenure', y ='Charges_Total_Day',hue='Churn',col='Contract',
                col_order=["Month-to-month","One year","Two year"], palette='Set2')
 
-g.figure.suptitle("Relação entre Total Gasto e Total Gasto por Dia",fontsize=16)
+g.figure.suptitle("Relação entre Meses de Contrato e Total Gasto por Dia",fontsize=16)
 g.figure.subplots_adjust(top=0.85)
+g.set_axis_labels("Tempo de Contrato (meses)", "Gasto Diário (R$)")
+g._legend.set_bbox_to_anchor((1.05, 0.5))
+g._legend.set_frame_on(False)
 
 plt.tight_layout()
 plt.show()
